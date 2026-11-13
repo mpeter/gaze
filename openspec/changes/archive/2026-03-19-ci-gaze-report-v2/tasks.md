@@ -14,4 +14,4 @@
 ## 3. Verification
 
 - [x] 3.1 Verify the workflow YAML is valid (indentation, `if` syntax, step ordering).
-- [ ] 3.2 Commit, push, and verify: the PR check runs the threshold step (JSON-only, no secrets needed) and skips the AI report step.
+- [ ] 3.2 Commit, push, and verify: the PR check runs the threshold step (JSON-only, no secrets needed) and skips the AI report step. (unverified: historical task completion not independently established)

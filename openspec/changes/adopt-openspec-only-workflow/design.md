@@ -28,3 +28,26 @@ the retired workflow's implementation. Upstream PR #93 (`038-platform-scaffold`)
 is closed and unmerged; #318 (`chore/spec040-retrospective-learnings`) is open
 and belongs to newer upstream work outside this fork's base. No remote state
 was deleted or modified.
+
+Workflow-only upstream records include merged PR #52 (spec-first guardrails)
+and merged PR #288 (historical artifact immutability). Neither has a fetched
+branch here. The open retrospective PR #318 is reported only, not modified.
+
+The already-completed command-directory migration was archived using
+`--skip-specs`: upstream PR #127 proves it shipped, and its 24 pre-existing
+completed tasks are unchanged. Reapplying its historical deltas after the
+product retirement would replace newer scenarios; skipping spec updates
+preserves the current canonical capability. No `--no-validate` flag was used;
+repository-wide validation remains required.
+
+## Historical integrity check
+
+All 150 numbered documents moved into 24 dated archives; the 127 existing
+archive documents remain in place. Their 1,336 checked and 35 unchecked boxes
+retain exact per-file state and order. Every unchecked item is explicitly
+unverified; no historical box was newly checked. The open items are in the
+classification-document consolidation (9), project documentation (8), coverage
+reason guidance (14), target warning guidance (2), and the two CI report
+archives (1 each). Original requirement/scenario and governance tokens and
+document line counts are retained. Forty-nine separate migration records carry
+source revision, original dates, PR evidence and limits of that evidence.

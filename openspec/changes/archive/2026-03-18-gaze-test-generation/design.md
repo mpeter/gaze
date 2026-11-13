@@ -75,7 +75,7 @@ Steps:
 
 ### D4: Implementation workflow integration
 
-Add a hook in both `/opsx-apply` (SKILL.md step 6) and `/speckit.implement` (step 8) that runs after each implementation task:
+Add a hook in both `/opsx-apply` (SKILL.md step 6) and the retired implementation command (step 8) that runs after each implementation task:
 
 ```
 After code changes, before marking [x]:

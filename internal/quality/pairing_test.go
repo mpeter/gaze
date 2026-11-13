@@ -13,7 +13,7 @@ import (
 // safeSSABuild is duplicated in internal/quality because Go's package
 // system does not allow importing unexported symbols across internal
 // packages. The duplication is intentional and bounded to this one
-// 6-line function — see specs/021-ssa-panic-recovery/research.md R3.
+// 6-line function — see openspec/changes/archive/2026-03-13-ssa-panic-recovery/research.md R3.
 // ---------------------------------------------------------------------------
 
 // TestSafeSSABuild_NoPanic verifies the quality package's

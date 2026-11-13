@@ -20,7 +20,7 @@ A comprehensive remediation system combines all three: generating new tests, add
 There are two modes:
 
 1. **Remediation** (`/gaze fix`) — after a report reveals CRAPload/GazeCRAPload violations, batch-generate tests for the worst offenders to bring the codebase below ratchet thresholds.
-2. **Development** (integrated into `/opsx-apply` and `/speckit.implement`) — as new code is written, automatically generate contract-level tests so quality debt never accumulates.
+2. **Development** (integrated into `/opsx-apply` and the retired implementation command) — as new code is written, automatically generate contract-level tests so quality debt never accumulates.
 
 ## What Changes
 
@@ -31,11 +31,11 @@ Add a test generation agent, a remediation command, and integration hooks into t
 ### New Capabilities
 - `gaze-test-generator` agent: Reads function source + gaze quality data (GapHints, Gaps, FixStrategy, AmbiguousEffects, UnmappedAssertions), performs four actions: generates new test functions (`add_tests`), strengthens existing tests and restructures assertions for mapper visibility (`add_assertions`), adds GoDoc comments to push ambiguous effects above the contractual threshold (`add_docs` — triggered when `ContractCoverageReason` is `all_effects_ambiguous`), and generates test skeletons for functions needing decomposition (`decompose_and_test`)
 - `/gaze fix` command: Batch remediation — runs gaze analysis, prioritizes functions by fix strategy, delegates to the test generator agent for each target, verifies generated tests compile and pass. Includes `--strategy` filter and `--top=N` limit.
-- Per-task test generation in `/opsx-apply` and `/speckit.implement`: After each implementation task, runs gaze analysis on changed files and generates contract tests for new/modified functions. Mandatory by default, configurable to advisory.
+- Per-task test generation in `/opsx-apply` and the retired implementation command: After each implementation task, runs gaze analysis on changed files and generates contract tests for new/modified functions. Mandatory by default, configurable to advisory.
 
 ### Modified Capabilities
 - `.opencode/skills/openspec-apply-change/SKILL.md`: Gains a test generation step in the per-task implementation loop
-- `.opencode/command/speckit.implement.md`: Same per-task hook
+- Retired implementation command definition: Same per-task hook
 - `internal/scaffold/`: Scaffold gains the new agent and command files for `gaze init`
 
 ### Removed Capabilities
@@ -46,7 +46,7 @@ Add a test generation agent, a remediation command, and integration hooks into t
 - `.opencode/agents/gaze-test-generator.md` — new agent prompt
 - `.opencode/command/gaze-fix.md` — new command
 - `.opencode/skills/openspec-apply-change/SKILL.md` — modified (test generation hook)
-- `.opencode/command/speckit.implement.md` — modified (test generation hook)
+- Retired implementation command definition — modified (test generation hook)
 - `internal/scaffold/assets/agents/gaze-test-generator.md` — new scaffold file
 - `internal/scaffold/assets/command/gaze-fix.md` — new scaffold file
 - `internal/scaffold/scaffold.go` — modified (register new files)
@@ -67,7 +67,7 @@ The test generator agent is a self-describing artifact (markdown prompt) that co
 
 **Assessment**: PASS
 
-The `/gaze fix` command is independently usable without the implementation workflow integration. The implementation hooks are additive — they don't break existing `/opsx-apply` or `/speckit.implement` behavior when gaze isn't installed.
+The `/gaze fix` command is independently usable without the implementation workflow integration. The implementation hooks are additive — they don't break existing `/opsx-apply` or retired implementation command behavior when gaze isn't installed.
 
 ### III. Observable Quality
 

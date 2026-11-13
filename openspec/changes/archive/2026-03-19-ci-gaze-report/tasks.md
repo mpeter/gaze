@@ -11,4 +11,4 @@
 ## 3. Verification
 
 - [x] 3.1 Verify the workflow YAML is valid by checking indentation, step ordering, and `if` condition syntax. Ensure the `if` condition uses string comparison: `matrix.go-version == '1.24'`.
-- [ ] 3.2 Commit, push, and verify CI passes (the gaze report step runs on Go 1.24 and thresholds are satisfied).
+- [ ] 3.2 Commit, push, and verify CI passes (the gaze report step runs on Go 1.24 and thresholds are satisfied). (unverified: historical task completion not independently established)

@@ -4,7 +4,7 @@
 
 ### Requirement: Implementation workflows MUST generate tests after each task
 
-Both `/opsx-apply` and `/speckit.implement` MUST include a test generation step after each implementation task's code changes, before marking the task complete.
+Both `/opsx-apply` and the retired implementation command MUST include a test generation step after each implementation task's code changes, before marking the task complete.
 
 #### Scenario: Test generation after task
 - **GIVEN** a task that modifies `internal/foo/bar.go`
