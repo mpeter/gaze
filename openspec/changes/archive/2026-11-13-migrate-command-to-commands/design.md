@@ -43,7 +43,7 @@ source directory is the simplest change with zero risk of path logic bugs.
 ### D2: Move only gaze-scaffolded live files
 
 **Decision**: Move 3 files (`gaze.md`, `gaze-fix.md`,
-`speckit.testreview.md`) from `.opencode/command/` to `.opencode/commands/`.
+the retired review command) from `.opencode/command/` to `.opencode/commands/`.
 Leave the other 26 command files untouched.
 
 **Rationale**: `TestEmbeddedAssetsMatchSource` enforces byte-identical
@@ -55,7 +55,7 @@ other 26 files are owned by `uf init` and are outside gaze's scope.
 ### D3: Update cross-references to `uf init` command paths
 
 **Decision**: Update the 2 cross-references in `gaze-fix.md` that point to
-`speckit.implement.md` and `opsx-apply.md` to use the `commands/` path.
+the retired review command and `opsx-apply.md` to use the `commands/` path.
 
 **Rationale**: `uf init` has migrated to `commands/` (PR #164 merged).
 Forward-looking references should use the canonical path. OpenCode loads
@@ -63,7 +63,7 @@ both directories, so the reference works either way at runtime.
 
 ### D4: Do not update historical spec artifacts
 
-**Decision**: Leave all `specs/NNN-*/` artifacts unchanged even though they
+**Decision**: Leave all historical strategic artifacts unchanged even though they
 reference `.opencode/command/`.
 
 **Rationale**: Spec artifacts are historical planning records that document
@@ -81,10 +81,22 @@ both. Running `uf init` will migrate the remaining files.
 
 ### Cross-reference fragility
 
-The `gaze-fix.md` references to `.opencode/commands/speckit.implement.md`
+The `gaze-fix.md` references to the previous implementation command
 and `.opencode/commands/opsx-apply.md` assume `uf init` has migrated those
 files. If a project has `uf init` from before PR #164, the files will still
 be at `command/` (singular). OpenCode resolves both paths, so the command
 will still work — but the reference path won't match the actual file path.
 This is acceptable: the migration is one-time and the glob fallback is
 reliable.
+
+## Historical archival evidence (2026-11-13)
+
+This change shipped in [upstream PR #127](https://github.com/unbound-force/gaze/pull/127),
+merged 2026-06-17. All 24 task checkboxes were already complete at `13bee279`;
+none is newly checked during this migration. The retired-command examples above
+describe the historical manifest, not current requirements.
+
+Archive this completed record without reapplying its old deltas. The current
+capability was consolidated at `dea2526` and updated by the separate shipped-asset
+retirement. Reapplying this older change would drop the newly added OpenSpec
+selection scenarios and restore obsolete ownership guidance.

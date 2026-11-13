@@ -172,6 +172,12 @@ The `release` job MUST depend on the `preflight` job via
 Previously: The `release` job had no dependencies and checked
 out the default ref.
 
+#### Scenario: Release waits for preflight and checks out tag
+
+- **WHEN** the `release` job runs
+- **THEN** it MUST depend on `preflight` via `needs: preflight` and check out
+  the tag ref using `ref: ${{ inputs.tag }}`
+
 ### Requirement: signing-secrets-detection
 
 The signing secrets check MUST be performed in the `preflight`
@@ -180,6 +186,12 @@ job and its output forwarded to the `sign-macos` job via the
 
 Previously: The signing secrets check was performed inline in
 the `release` job.
+
+#### Scenario: Signing secrets result forwarded from preflight
+
+- **WHEN** signing secrets are checked
+- **THEN** the check MUST run in `preflight` and its output MUST reach
+  `sign-macos` via the `release` job's outputs
 
 ## REMOVED Requirements
 

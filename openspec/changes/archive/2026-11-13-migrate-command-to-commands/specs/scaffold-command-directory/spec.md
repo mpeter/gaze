@@ -18,7 +18,7 @@ Previously: `gaze init` wrote command files to `.opencode/command/`
 - **WHEN** the user runs `gaze init`
 - **THEN** command files MUST be created under `.opencode/commands/`
   (e.g., `.opencode/commands/gaze.md`, `.opencode/commands/gaze-fix.md`,
-  `.opencode/commands/speckit.testreview.md`)
+  and the retired review command)
 
 #### Scenario: Re-initialization with existing files at old path
 
@@ -39,7 +39,7 @@ prefix (singular).
 
 #### Scenario: Tool-owned command file detection
 
-- **GIVEN** a relative path `"commands/speckit.testreview.md"`
+- **GIVEN** the retired review command's historical relative path under `commands/`
 - **WHEN** `isToolOwned` is called with this path
 - **THEN** it MUST return `true`
 
@@ -59,8 +59,8 @@ Previously: Cross-references used `.opencode/command/` (singular).
 #### Scenario: gaze-fix.md cross-references
 
 - **GIVEN** the embedded `gaze-fix.md` asset
-- **WHEN** it references the Speckit implement command
-- **THEN** the path MUST be `.opencode/commands/speckit.implement.md`
+- **WHEN** it historically referenced the previous implementation command
+- **THEN** that historical path MUST use `.opencode/commands/`
 - **AND** the OpenSpec apply reference MUST be
   `.opencode/commands/opsx-apply.md`
 

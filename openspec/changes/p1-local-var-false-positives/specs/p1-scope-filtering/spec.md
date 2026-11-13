@@ -115,6 +115,13 @@ Slice aliasing (a local slice sub-sliced and returned, sharing the backing
 array) is a known limitation. The scope check MAY produce a false negative
 for this pattern. This SHOULD be documented in code comments.
 
+#### Scenario: Slice aliasing limitation documented
+
+- **GIVEN** a local slice is sub-sliced and returned, sharing the backing array
+- **WHEN** the scope check evaluates this pattern
+- **THEN** it MAY produce a false negative, and this limitation SHOULD be
+  documented in code comments
+
 ---
 
 ## MODIFIED Requirements
@@ -125,6 +132,12 @@ Previously: `detectSendEffects` did not receive `info *types.Info`.
 
 `detectSendEffects` MUST accept `info *types.Info` as a parameter so that
 `isExternallyObservable` can resolve channel variable scope.
+
+#### Scenario: Channel scope information passed to send detection
+
+- **WHEN** `detectSendEffects` is called
+- **THEN** it MUST receive `info *types.Info` so that `isExternallyObservable`
+  can resolve channel variable scope
 
 ---
 

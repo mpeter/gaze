@@ -4,29 +4,29 @@
 
 ## 2. Update internal cross-references in embedded assets
 
-- [x] 2.1 In `internal/scaffold/assets/commands/gaze-fix.md`, update line 50: `.opencode/command/speckit.implement.md` → `.opencode/commands/speckit.implement.md`.
+- [x] 2.1 In `internal/scaffold/assets/commands/gaze-fix.md`, historically update line 50: move the previous implementation command reference from `.opencode/command/` to `.opencode/commands/`.
 - [x] 2.2 In `internal/scaffold/assets/commands/gaze-fix.md`, update line 66: `.opencode/command/opsx-apply.md` → `.opencode/commands/opsx-apply.md`.
 
 ## 3. Update scaffold Go code
 
-- [x] 3.1 In `internal/scaffold/scaffold.go`, update `isToolOwned` switch cases: `"command/speckit.testreview.md"` → `"commands/speckit.testreview.md"`, `"command/gaze-fix.md"` → `"commands/gaze-fix.md"`.
+- [x] 3.1 In `internal/scaffold/scaffold.go`, update `isToolOwned` switch cases: historically move the retired review command from `command/` to `commands/`, and `"command/gaze-fix.md"` → `"commands/gaze-fix.md"`.
 - [x] 3.2 In `internal/scaffold/scaffold.go`, update GoDoc comments referencing `.opencode/command/` to `.opencode/commands/` (~4 locations: lines 64, 70, 139, 244).
 
 ## 4. Update scaffold tests
 
-- [x] 4.1 In `internal/scaffold/scaffold_test.go`, update `TestRun_CreatesFiles` expected paths: `".opencode/command/gaze.md"` → `".opencode/commands/gaze.md"`, `".opencode/command/speckit.testreview.md"` → `".opencode/commands/speckit.testreview.md"` (lines 51-52).
+- [x] 4.1 In `internal/scaffold/scaffold_test.go`, update `TestRun_CreatesFiles` expected paths: `".opencode/command/gaze.md"` → `".opencode/commands/gaze.md"`, and historically move the retired review command from `.opencode/command/` to `.opencode/commands/` (lines 51-52).
 - [x] 4.2 In `internal/scaffold/scaffold_test.go`, update `TestRun_VersionMarker_Dev` prefix check: `"command/"` → `"commands/"` (line 283).
-- [x] 4.3 In `internal/scaffold/scaffold_test.go`, update `TestAssetPaths_Returns8Files` expected map keys: `"command/gaze-fix.md"` → `"commands/gaze-fix.md"`, `"command/gaze.md"` → `"commands/gaze.md"`, `"command/speckit.testreview.md"` → `"commands/speckit.testreview.md"` (lines 372-374).
-- [x] 4.4 In `internal/scaffold/scaffold_test.go`, update `TestRun_OverwriteOnDiff_ToolOwned` path construction: `"command"` → `"commands"` and asset content key `"command/speckit.testreview.md"` → `"commands/speckit.testreview.md"` (lines 438-490).
+- [x] 4.3 In `internal/scaffold/scaffold_test.go`, update `TestAssetPaths_Returns8Files` expected map keys: `"command/gaze-fix.md"` → `"commands/gaze-fix.md"`, `"command/gaze.md"` → `"commands/gaze.md"`, and historically move the retired review command from `command/` to `commands/` (lines 372-374).
+- [x] 4.4 In `internal/scaffold/scaffold_test.go`, update `TestRun_OverwriteOnDiff_ToolOwned` path construction: `"command"` → `"commands"` and historically move the retired review command asset content key from `command/` to `commands/` (lines 438-490).
 - [x] 4.5 In `internal/scaffold/scaffold_test.go`, update `TestRun_OverwriteOnDiff_SkipsIdentical` path construction and expected skip entry: `"command"` → `"commands"` (lines 548-560).
-- [x] 4.6 In `internal/scaffold/scaffold_test.go`, update `TestIsToolOwned` test cases: `"command/speckit.testreview.md"` → `"commands/speckit.testreview.md"`, `"command/gaze.md"` → `"commands/gaze.md"`, `"command/speckit.analyze.md"` → `"commands/speckit.analyze.md"` (lines 580-587).
+- [x] 4.6 In `internal/scaffold/scaffold_test.go`, update `TestIsToolOwned` test cases: historically move the retired review command and other retired workflow command cases from `command/` to `commands/`, and `"command/gaze.md"` → `"commands/gaze.md"` (lines 580-587).
 
 ## 5. Move live gaze-scaffolded command files
 
 - [x] 5.1 Create `.opencode/commands/` directory: `mkdir -p .opencode/commands/`.
 - [x] 5.2 `git mv .opencode/command/gaze.md .opencode/commands/gaze.md`.
 - [x] 5.3 `git mv .opencode/command/gaze-fix.md .opencode/commands/gaze-fix.md`.
-- [x] 5.4 `git mv .opencode/command/speckit.testreview.md .opencode/commands/speckit.testreview.md`.
+- [x] 5.4 Historically move the retired review command from `.opencode/command/` to `.opencode/commands/`.
 - [x] 5.5 Update live `.opencode/commands/gaze-fix.md` cross-references to match embedded copy (same changes as tasks 2.1 and 2.2).
 
 ## 6. Update documentation

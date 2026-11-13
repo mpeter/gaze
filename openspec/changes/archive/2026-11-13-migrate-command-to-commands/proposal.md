@@ -1,5 +1,9 @@
 ## Why
 
+This change records the historical directory migration. References to the
+retired review command preserve that migration's original behavior; they do
+not require restoring or creating a command.
+
 OpenCode documentation canonicalizes `.opencode/commands/` (plural) as the
 standard directory for slash commands. The `unbound-force` meta-repo has
 already migrated its scaffold engine (`unbound-force/unbound-force#164`),
@@ -47,7 +51,7 @@ Closes: https://github.com/unbound-force/gaze/issues/94
   `isToolOwned`), `internal/scaffold/scaffold_test.go` (path expectations),
   `internal/scaffold/assets/` (directory rename).
 - **Live command files**: 3 files moved from `.opencode/command/` to
-  `.opencode/commands/` (gaze.md, gaze-fix.md, speckit.testreview.md).
+  `.opencode/commands/` (gaze.md, gaze-fix.md, and the retired review command).
 - **Documentation**: `docs/reference/cli/init.md`,
   `docs/guides/opencode-integration.md`, `AGENTS.md` (recent changes section).
 - **Not changed**: Historical spec artifacts under `specs/`, non-gaze command
@@ -56,7 +60,7 @@ Closes: https://github.com/unbound-force/gaze/issues/94
 
 ## Constitution Alignment
 
-Assessed against the Gaze project constitution (`.specify/memory/constitution.md`).
+Assessed against the Gaze project constitution (`openspec/constitution.md`).
 
 ### I. Accuracy
 
