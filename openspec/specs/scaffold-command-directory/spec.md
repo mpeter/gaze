@@ -11,14 +11,15 @@ manifest and the command-directory migration at revision `13bee279`.
 ### Requirement: Scaffold output directory for command files
 
 `gaze init` MUST write command files to `.opencode/commands/` (plural)
-instead of `.opencode/command/` (singular).
+instead of `.opencode/command/` (singular). Only supported quality commands
+MUST be deployed; the retired review command MUST NOT be created.
 
 #### Scenario: Fresh project initialization
 
 - **GIVEN** a Go project with no `.opencode/` directory
 - **WHEN** the user runs `gaze init`
 - **THEN** command files MUST be created under `.opencode/commands/`
-  including `gaze.md`, `gaze-fix.md` and the retired review command
+  including only `gaze.md` and `gaze-fix.md`
 
 #### Scenario: Re-initialization with existing files at old path
 
@@ -32,13 +33,14 @@ instead of `.opencode/command/` (singular).
 ### Requirement: Tool-owned file identification
 
 The `isToolOwned` function MUST recognize tool-owned command files under the
-`commands/` prefix (plural). References, the retired review command,
-`commands/gaze-fix.md` and `agents/gaze-test-generator.md` are tool-owned;
-the reporter, testing reviewer and `commands/gaze.md` are user-owned.
+`commands/` prefix (plural). References, `commands/gaze-fix.md` and
+`agents/gaze-test-generator.md` are tool-owned; the reporter, testing reviewer
+and `commands/gaze.md` are user-owned. The retired review command MUST NOT
+remain in the explicit ownership list.
 
 #### Scenario: Tool-owned command file detection
 
-- **GIVEN** the relative path of the retired review command under `commands/`
+- **GIVEN** the relative path `"commands/gaze-fix.md"`
 - **WHEN** `isToolOwned` is called with this path
 - **THEN** it MUST return `true`
 
@@ -51,17 +53,31 @@ the reporter, testing reviewer and `commands/gaze.md` are user-owned.
 ### Requirement: Internal cross-references
 
 Scaffolded command files that reference other command files MUST use
-the `.opencode/commands/` path (plural). No-argument `/gaze fix` MUST
-detect the previous numbered workflow or an active OpenSpec change.
-The testing reviewer MUST read the constitution and relevant planning artifacts.
+the `.opencode/commands/` path (plural). No-argument `/gaze fix` MUST detect
+only active OpenSpec changes, excluding `archive/`, and MUST NOT invoke the
+previous numbered workflow. If several changes are active, it MUST ask which
+change to use. If none is active, it MUST offer OpenSpec implementation or
+batch remediation. The testing reviewer MUST read `openspec/constitution.md`
+and the relevant change's proposal, design, tasks and capability specifications.
 
 #### Scenario: gaze-fix.md cross-references
 
 - **GIVEN** the embedded `gaze-fix.md` asset
-- **WHEN** it references the previous implementation command
-- **THEN** the path MUST be under `.opencode/commands/`
-- **AND** the OpenSpec apply reference MUST be
-  `.opencode/commands/opsx-apply.md`
+- **WHEN** it references the implementation command
+- **THEN** the path MUST be `.opencode/commands/opsx-apply.md`
+- **AND** no previous workflow implementation command is referenced
+
+#### Scenario: Multiple active changes
+
+- **GIVEN** several active OpenSpec changes with tasks
+- **WHEN** `/gaze fix` runs without arguments
+- **THEN** the user is asked which change to implement
+
+#### Scenario: No active change
+
+- **GIVEN** no active OpenSpec change
+- **WHEN** `/gaze fix` runs without arguments
+- **THEN** the command offers OpenSpec implementation or batch test generation
 
 ### Requirement: Embedded asset source-of-truth test
 
@@ -77,14 +93,34 @@ embedded assets and live `.opencode/` files using the `commands/` directory.
 
 ### Requirement: Shipped asset manifest
 
-`gaze init` MUST deploy eight files: three agents (`gaze-reporter.md`,
-`gaze-test-generator.md`, `reviewer-testing.md`), three commands (`gaze.md`,
-`gaze-fix.md`, the retired review command), and two references
-(`doc-scoring-model.md`, `example-report.md`). Its closing hint MUST mention
-quality reports and the retired testability command.
+`gaze init` MUST deploy exactly seven files: three agents (`gaze-reporter.md`,
+`gaze-test-generator.md`, `reviewer-testing.md`), two commands (`gaze.md`,
+`gaze-fix.md`), and two references (`doc-scoring-model.md`, `example-report.md`).
+Its closing hint MUST mention `/gaze` quality reports and `/gaze-fix` test
+generation, not the retired testability command.
 
 #### Scenario: Exact manifest
 
 - **GIVEN** a fresh project
 - **WHEN** `gaze init` runs
-- **THEN** exactly those eight assets are created and reported
+- **THEN** exactly those seven assets are created and reported
+
+### Requirement: Preserve stale installed assets
+
+`gaze init` MUST leave files outside the current embedded manifest untouched
+and unreported, including already-installed copies of the retired review
+command. This MUST hold both without and with `--force`.
+
+#### Scenario: Normal initialization with a stale command
+
+- **GIVEN** an existing retired command with locally customized bytes
+- **WHEN** `gaze init` runs without `--force`
+- **THEN** those bytes remain unchanged
+- **AND** the stale file is absent from every result list and summary
+
+#### Scenario: Forced initialization with a stale command
+
+- **GIVEN** an existing retired command with locally customized bytes
+- **WHEN** `gaze init --force` runs
+- **THEN** those bytes remain unchanged
+- **AND** the stale file is absent from every result list and summary

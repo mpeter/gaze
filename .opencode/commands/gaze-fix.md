@@ -1,18 +1,17 @@
 ---
 description: >
   Generate tests and documentation fixes for functions identified by
-  gaze quality analysis, or auto-detect and run the active implementation
-  workflow (Speckit/OpenSpec). With arguments: batch remediation.
-  Without arguments: detects active workflow and runs /speckit.implement
-  or /opsx-apply.
+  gaze quality analysis, or select and implement an active OpenSpec
+  change. With arguments: batch remediation.
+  Without arguments: selects an active change and runs /opsx-apply.
 ---
 
 # Command: /gaze fix
 
 ## Description
 
-Dual-mode command. Without arguments, detects the active implementation
-workflow (Speckit or OpenSpec) and runs it. With arguments, performs
+Dual-mode command. Without arguments, selects an active OpenSpec change
+and runs its implementation. With arguments, performs
 batch remediation — reads gaze analysis data, identifies functions
 needing tests or documentation, and generates compilable fixes via
 the `gaze-test-generator` agent.
@@ -40,21 +39,13 @@ the `gaze-test-generator` agent.
 
 ### When no arguments are provided
 
-Detect the active workflow and delegate to the corresponding
-implementation command:
+Detect an active OpenSpec change and delegate to implementation:
 
-1. **Check for a Speckit feature branch**: Run
-   `.specify/scripts/bash/check-prerequisites.sh --json --paths-only`
-   from the repo root. If it succeeds and returns a `FEATURE_DIR`
-   with a `tasks.md`, this is a Speckit strategic workflow.
-   Read the full contents of `.opencode/commands/speckit.implement.md`
-   and execute its instructions directly — follow the implementation
-   workflow it describes.
-
-2. **Check for an OpenSpec active change**: Look for directories
+1. **Find active changes**: Look for directories
    under `openspec/changes/` (excluding `archive/`) that contain a
-   `tasks.md` file. If one exists, this is an OpenSpec tactical
-   workflow.
+   `tasks.md` file. If multiple changes exist, ask the user which
+   change to implement before proceeding. If exactly one exists,
+   select it.
    **Validate branch**: Run `git rev-parse --abbrev-ref HEAD`.
    The current branch must be `opsx/<change-name>` where
    `<change-name>` matches the detected change directory name.
@@ -62,17 +53,16 @@ implementation command:
    > "OpenSpec change `<name>` detected but you are on branch
    > `<current-branch>`. Run: `git checkout opsx/<name>`"
 
-   If on the correct branch, read the full contents of
-   `.opencode/commands/opsx-apply.md` and execute its instructions
-   directly.
+   If on the correct branch, invoke the project's installed
+   `/opsx-apply <change-name>` command. Its instructions normally
+   live at `.opencode/commands/opsx-apply.md`; use the installed
+   command rather than assuming this file is supplied by `gaze init`.
 
-3. **If neither is detected**: Ask the user using the question tool:
+2. **If none is detected**: Ask the user using the question tool:
 
    > No active implementation context detected. Would you like to:
    >
-   > - `/speckit.implement` — Strategic spec implementation
-   >   (requires a feature branch with `specs/NNN-*/tasks.md`)
-   > - `/opsx-apply` — Tactical change implementation
+   > - `/opsx-apply` — OpenSpec change implementation
    >   (requires an active change in `openspec/changes/`)
    > - `/gaze fix ./...` — Batch test generation on full module
 

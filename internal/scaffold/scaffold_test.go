@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-// TestRun_CreatesFiles verifies that gaze init creates exactly 8
+// TestRun_CreatesFiles verifies that gaze init creates exactly 7
 // files (agents, commands, and reference files) in the correct
 // directories when run in an empty project.
 func TestRun_CreatesFiles(t *testing.T) {
@@ -31,8 +31,8 @@ func TestRun_CreatesFiles(t *testing.T) {
 		t.Fatalf("Run() returned error: %v", err)
 	}
 
-	if len(result.Created) != 8 {
-		t.Errorf("expected 8 created files, got %d: %v", len(result.Created), result.Created)
+	if len(result.Created) != 7 {
+		t.Errorf("expected 7 created files, got %d: %v", len(result.Created), result.Created)
 	}
 	if len(result.Skipped) != 0 {
 		t.Errorf("expected 0 skipped files, got %d: %v", len(result.Skipped), result.Skipped)
@@ -44,20 +44,25 @@ func TestRun_CreatesFiles(t *testing.T) {
 		t.Errorf("expected 0 updated files, got %d: %v", len(result.Updated), result.Updated)
 	}
 
-	// Verify all 6 expected files exist on disk.
+	// Verify all seven expected files exist on disk.
 	expected := []string{
 		".opencode/agents/gaze-reporter.md",
+		".opencode/agents/gaze-test-generator.md",
 		".opencode/agents/reviewer-testing.md",
 		".opencode/commands/gaze.md",
-		".opencode/commands/speckit.testreview.md",
+		".opencode/commands/gaze-fix.md",
 		".opencode/references/doc-scoring-model.md",
 		".opencode/references/example-report.md",
 	}
 	for _, rel := range expected {
 		path := filepath.Join(dir, rel)
-		if _, err := os.Stat(path); os.IsNotExist(err) {
-			t.Errorf("expected file %s to exist", rel)
+		if _, err := os.Stat(path); err != nil {
+			t.Errorf("expected file %s to exist: %v", rel, err)
 		}
+	}
+	staleName := strings.Join([]string{"spec", "kit.testreview.md"}, "")
+	if _, err := os.Stat(filepath.Join(dir, ".opencode", "commands", staleName)); !errors.Is(err, fs.ErrNotExist) {
+		t.Errorf("retired command should be absent, got: %v", err)
 	}
 
 	// Verify summary mentions "created".
@@ -65,7 +70,7 @@ func TestRun_CreatesFiles(t *testing.T) {
 	if !strings.Contains(output, "created:") {
 		t.Errorf("summary should mention 'created:', got:\n%s", output)
 	}
-	if !strings.Contains(output, "Run /gaze") {
+	if !strings.Contains(output, "Run /gaze for quality reports and /gaze-fix for test generation.") {
 		t.Errorf("summary should contain hint, got:\n%s", output)
 	}
 }
@@ -92,8 +97,8 @@ func TestRun_SkipsExisting(t *testing.T) {
 	}
 
 	// Second run without --force: tool-owned files have identical
-	// content, so all 6 files land in Skipped (3 user-owned +
-	// 3 tool-owned identical).
+	// content, so all 7 files land in Skipped (3 user-owned +
+	// 4 tool-owned identical).
 	var buf2 bytes.Buffer
 	result, err := Run(Options{
 		TargetDir: dir,
@@ -107,8 +112,8 @@ func TestRun_SkipsExisting(t *testing.T) {
 	if len(result.Created) != 0 {
 		t.Errorf("expected 0 created, got %d: %v", len(result.Created), result.Created)
 	}
-	if len(result.Skipped) != 8 {
-		t.Errorf("expected 8 skipped, got %d: %v", len(result.Skipped), result.Skipped)
+	if len(result.Skipped) != 7 {
+		t.Errorf("expected 7 skipped, got %d: %v", len(result.Skipped), result.Skipped)
 	}
 	if len(result.Overwritten) != 0 {
 		t.Errorf("expected 0 overwritten, got %d: %v", len(result.Overwritten), result.Overwritten)
@@ -165,8 +170,8 @@ func TestRun_ForceOverwrites(t *testing.T) {
 	if len(result.Skipped) != 0 {
 		t.Errorf("expected 0 skipped, got %d: %v", len(result.Skipped), result.Skipped)
 	}
-	if len(result.Overwritten) != 8 {
-		t.Errorf("expected 8 overwritten, got %d: %v", len(result.Overwritten), result.Overwritten)
+	if len(result.Overwritten) != 7 {
+		t.Errorf("expected 7 overwritten, got %d: %v", len(result.Overwritten), result.Overwritten)
 	}
 	if len(result.Updated) != 0 {
 		t.Errorf("expected 0 updated, got %d: %v", len(result.Updated), result.Updated)
@@ -305,8 +310,8 @@ func TestRun_NoGoMod_PrintsWarning(t *testing.T) {
 	}
 
 	// Files should still be created.
-	if len(result.Created) != 8 {
-		t.Errorf("expected 8 created files, got %d", len(result.Created))
+	if len(result.Created) != 7 {
+		t.Errorf("expected 7 created files, got %d", len(result.Created))
 	}
 
 	// Warning should be printed.
@@ -333,8 +338,8 @@ func TestEmbeddedAssetsMatchSource(t *testing.T) {
 		t.Fatalf("assetPaths() returned error: %v", err)
 	}
 
-	if len(paths) != 8 {
-		t.Fatalf("expected 8 embedded assets, got %d: %v", len(paths), paths)
+	if len(paths) != 7 {
+		t.Fatalf("expected 7 embedded assets, got %d: %v", len(paths), paths)
 	}
 
 	for _, relPath := range paths {
@@ -357,9 +362,9 @@ func TestEmbeddedAssetsMatchSource(t *testing.T) {
 	}
 }
 
-// TestAssetPaths_Returns8Files verifies the embedded asset manifest
-// contains exactly 8 files.
-func TestAssetPaths_Returns8Files(t *testing.T) {
+// TestAssetPaths_Returns7Files verifies the embedded asset manifest
+// contains exactly 7 files.
+func TestAssetPaths_Returns7Files(t *testing.T) {
 	paths, err := assetPaths()
 	if err != nil {
 		t.Fatalf("assetPaths() returned error: %v", err)
@@ -371,7 +376,6 @@ func TestAssetPaths_Returns8Files(t *testing.T) {
 		"agents/reviewer-testing.md":      true,
 		"commands/gaze-fix.md":            true,
 		"commands/gaze.md":                true,
-		"commands/speckit.testreview.md":  true,
 		"references/doc-scoring-model.md": true,
 		"references/example-report.md":    true,
 	}
@@ -398,7 +402,7 @@ func TestRun_OverwriteOnDiff_ToolOwned(t *testing.T) {
 		t.Fatalf("creating go.mod: %v", err)
 	}
 
-	// First run: create all 8 files.
+	// First run: create all 7 files.
 	var buf1 bytes.Buffer
 	result1, err := Run(Options{
 		TargetDir: dir,
@@ -408,8 +412,8 @@ func TestRun_OverwriteOnDiff_ToolOwned(t *testing.T) {
 	if err != nil {
 		t.Fatalf("first Run() returned error: %v", err)
 	}
-	if len(result1.Created) != 8 {
-		t.Fatalf("expected 8 created files, got %d: %v", len(result1.Created), result1.Created)
+	if len(result1.Created) != 7 {
+		t.Fatalf("expected 7 created files, got %d: %v", len(result1.Created), result1.Created)
 	}
 
 	// Second run without --force: all files should be skipped
@@ -423,8 +427,8 @@ func TestRun_OverwriteOnDiff_ToolOwned(t *testing.T) {
 	if err != nil {
 		t.Fatalf("second Run() returned error: %v", err)
 	}
-	if len(result2.Skipped) != 8 {
-		t.Errorf("expected 8 skipped, got %d: %v", len(result2.Skipped), result2.Skipped)
+	if len(result2.Skipped) != 7 {
+		t.Errorf("expected 7 skipped, got %d: %v", len(result2.Skipped), result2.Skipped)
 	}
 	if len(result2.Updated) != 0 {
 		t.Errorf("expected 0 updated, got %d: %v", len(result2.Updated), result2.Updated)
@@ -435,13 +439,13 @@ func TestRun_OverwriteOnDiff_ToolOwned(t *testing.T) {
 	if err := os.WriteFile(refPath, []byte("modified content\n"), 0o644); err != nil {
 		t.Fatalf("modifying reference file: %v", err)
 	}
-	cmdPath := filepath.Join(dir, ".opencode", "commands", "speckit.testreview.md")
+	cmdPath := filepath.Join(dir, ".opencode", "commands", "gaze-fix.md")
 	if err := os.WriteFile(cmdPath, []byte("modified command\n"), 0o644); err != nil {
 		t.Fatalf("modifying command file: %v", err)
 	}
 
 	// Third run without --force: the 2 modified tool-owned files
-	// should be overwritten (Updated), the other 3 tool-owned files
+	// should be overwritten (Updated), the other 2 tool-owned files
 	// skipped (identical), and 3 user-owned files skipped.
 	var buf3 bytes.Buffer
 	result3, err := Run(Options{
@@ -456,9 +460,9 @@ func TestRun_OverwriteOnDiff_ToolOwned(t *testing.T) {
 	if len(result3.Updated) != 2 {
 		t.Errorf("expected 2 updated, got %d: %v", len(result3.Updated), result3.Updated)
 	}
-	// 3 user-owned + 3 identical tool-owned = 6 skipped.
-	if len(result3.Skipped) != 6 {
-		t.Errorf("expected 6 skipped, got %d: %v", len(result3.Skipped), result3.Skipped)
+	// 3 user-owned + 2 identical tool-owned = 5 skipped.
+	if len(result3.Skipped) != 5 {
+		t.Errorf("expected 5 skipped, got %d: %v", len(result3.Skipped), result3.Skipped)
 	}
 	if len(result3.Created) != 0 {
 		t.Errorf("expected 0 created, got %d: %v", len(result3.Created), result3.Created)
@@ -487,7 +491,7 @@ func TestRun_OverwriteOnDiff_ToolOwned(t *testing.T) {
 	if readErr != nil {
 		t.Fatalf("reading restored command file: %v", readErr)
 	}
-	embeddedCmd, embErr := assetContent("commands/speckit.testreview.md")
+	embeddedCmd, embErr := assetContent("commands/gaze-fix.md")
 	if embErr != nil {
 		t.Fatalf("reading embedded command asset: %v", embErr)
 	}
@@ -544,9 +548,9 @@ func TestRun_OverwriteOnDiff_SkipsIdentical(t *testing.T) {
 		t.Errorf("expected 0 updated (identical content), got %d: %v", len(result.Updated), result.Updated)
 	}
 
-	// All 8 files should be skipped.
-	if len(result.Skipped) != 8 {
-		t.Errorf("expected 8 skipped, got %d: %v", len(result.Skipped), result.Skipped)
+	// All 7 files should be skipped.
+	if len(result.Skipped) != 7 {
+		t.Errorf("expected 7 skipped, got %d: %v", len(result.Skipped), result.Skipped)
 	}
 
 	// Verify tool-owned files are specifically in the skipped list.
@@ -557,7 +561,8 @@ func TestRun_OverwriteOnDiff_SkipsIdentical(t *testing.T) {
 	for _, toolOwned := range []string{
 		filepath.Join(".opencode", "references", "doc-scoring-model.md"),
 		filepath.Join(".opencode", "references", "example-report.md"),
-		filepath.Join(".opencode", "commands", "speckit.testreview.md"),
+		filepath.Join(".opencode", "commands", "gaze-fix.md"),
+		filepath.Join(".opencode", "agents", "gaze-test-generator.md"),
 	} {
 		if !skippedMap[toolOwned] {
 			t.Errorf("expected %s in skipped list", toolOwned)
@@ -577,7 +582,7 @@ func TestIsToolOwned(t *testing.T) {
 		{"references/example-report.md", true},
 		{"references/any-future-file.md", true},
 		// Tool-owned: explicit command files.
-		{"commands/speckit.testreview.md", true},
+		{"agents/gaze-test-generator.md", true},
 		{"commands/gaze-fix.md", true},
 		// User-owned: agents.
 		{"agents/gaze-reporter.md", false},
@@ -585,7 +590,7 @@ func TestIsToolOwned(t *testing.T) {
 		// User-owned: other commands.
 		{"commands/gaze.md", false},
 		// Edge cases.
-		{"commands/speckit.analyze.md", false},
+		{"commands/other.md", false},
 		{"references", false},
 	}
 	for _, tc := range cases {
@@ -655,9 +660,76 @@ func TestInsertMarkerAfterFrontmatter(t *testing.T) {
 	}
 }
 
-// findProjectRoot walks up the directory tree from the current
-// working directory to find the project root (directory containing
-// go.mod).
+func TestRun_PreservesStaleCommand(t *testing.T) {
+	staleName := strings.Join([]string{"spec", "kit.testreview.md"}, "")
+	for _, force := range []bool{false, true} {
+		name := "normal"
+		if force {
+			name = "force"
+		}
+		t.Run(name, func(t *testing.T) {
+			dir := t.TempDir()
+			rel := filepath.Join(".opencode", "commands", staleName)
+			full := filepath.Join(dir, rel)
+			if err := os.MkdirAll(filepath.Dir(full), 0o755); err != nil {
+				t.Fatal(err)
+			}
+			original := []byte("locally customized retired command\n")
+			if err := os.WriteFile(full, original, 0o644); err != nil {
+				t.Fatal(err)
+			}
+			var output bytes.Buffer
+			result, err := Run(Options{TargetDir: dir, Force: force, Stdout: &output})
+			if err != nil {
+				t.Fatal(err)
+			}
+			got, err := os.ReadFile(full)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !bytes.Equal(got, original) {
+				t.Errorf("stale command changed: %q", got)
+			}
+			for category, paths := range map[string][]string{
+				"created": result.Created, "skipped": result.Skipped,
+				"updated": result.Updated, "overwritten": result.Overwritten,
+			} {
+				for _, p := range paths {
+					if p == rel {
+						t.Errorf("stale command reported as %s", category)
+					}
+				}
+			}
+			if strings.Contains(output.String(), staleName) {
+				t.Errorf("summary mentions stale command: %s", output.String())
+			}
+		})
+	}
+}
+
+func TestAssets_OpenSpecGuidance(t *testing.T) {
+	for asset, required := range map[string][]string{
+		"commands/gaze-fix.md": {
+			"openspec/changes/", "archive/", "multiple", "ask",
+			".opencode/commands/opsx-apply.md", "/gaze fix ./...",
+		},
+		"agents/reviewer-testing.md": {
+			"openspec/constitution.md", "proposal.md", "design.md", "tasks.md", "specs/",
+		},
+	} {
+		content, err := assetContent(asset)
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, text := range required {
+			if !strings.Contains(string(content), text) {
+				t.Errorf("%s lacks %q", asset, text)
+			}
+		}
+	}
+}
+
+// findProjectRoot walks up to the directory containing go.mod.
 func findProjectRoot() (string, error) {
 	dir, err := os.Getwd()
 	if err != nil {
