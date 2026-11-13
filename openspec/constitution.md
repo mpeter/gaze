@@ -109,8 +109,8 @@ trusted — by users or by Gaze itself.
 
 - **Spec-First Development**: All changes that modify production code,
   test code, agent prompts, embedded assets, or CI configuration MUST
-  be preceded by a spec workflow (either the Speckit pipeline under
-  `specs/` or the OpenSpec pipeline under `openspec/changes/`). The
+  be preceded by an OpenSpec change under `openspec/changes/`, the
+  project's only active requirements pipeline. The
   spec artifacts (proposal, design, tasks at minimum) MUST exist
   before implementation begins. This ensures every change has a
   planning record, a reviewable intent, and a traceable rationale.

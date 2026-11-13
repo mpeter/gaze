@@ -1,22 +1,22 @@
 schema: unbound-force
 
 context: |
-  This project follows the Unbound Force org constitution.
+  This project follows the Gaze constitution.
   Four core principles govern all work:
 
-  I. Autonomous Collaboration: Heroes collaborate through
-     well-defined artifacts, not runtime coupling.
-  II. Composability First: Every hero is independently
-      installable and usable alone.
-  III. Observable Quality: Every hero produces
-       machine-parseable output with provenance.
+  I. Accuracy: Analysis claims require regression evidence;
+     false positives and false negatives are defects.
+  II. Minimal Assumptions: Preserve supported behavior and
+      make unavoidable assumptions explicit.
+  III. Actionable Output: Reports identify concrete improvements
+       and support human and machine consumers.
   IV. Testability: Every component MUST be testable in
        isolation without requiring external services.
 
   All changes MUST align with these principles.
   Constitution violations are CRITICAL severity.
 
-  Full constitution: .specify/memory/constitution.md
+  Full constitution: openspec/constitution.md
 
 rules:
   proposal:

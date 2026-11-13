@@ -23,30 +23,28 @@
 
 ## Constitution Alignment
 
-Assessed against the Unbound Force org constitution.
+Assessed against the Gaze constitution at `openspec/constitution.md`.
 
-### I. Autonomous Collaboration
-
-**Assessment**: PASS | N/A
-
-<!-- How does this change affect artifact-based
-communication? Does it maintain self-describing
-outputs? -->
-
-### II. Composability First
+### I. Accuracy
 
 **Assessment**: PASS | N/A
 
-<!-- Does this change maintain standalone
-functionality? Does it avoid introducing mandatory
-dependencies? -->
+<!-- Does this preserve accurate analysis? What regression
+evidence supports changed behavior? -->
 
-### III. Observable Quality
+### II. Minimal Assumptions
 
 **Assessment**: PASS | N/A
 
-<!-- Does this change produce machine-parseable
-output? Does it maintain provenance metadata? -->
+<!-- Are unavoidable assumptions explicit? Does this preserve
+behavior in supported environments? -->
+
+### III. Actionable Output
+
+**Assessment**: PASS | N/A
+
+<!-- Does output guide concrete improvements and support
+human-readable and machine-readable consumers? -->
 
 ### IV. Testability
 

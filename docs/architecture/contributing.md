@@ -240,7 +240,7 @@ test: add contract coverage tests for docscan.Filter
 
 - Feature branches required for all changes
 - No direct commits to `main` except trivial doc fixes
-- Branch names follow spec numbering (e.g., `001-side-effect-detection`) or kebab-case for targeted changes (e.g., `fix-ssa-goroutine-panic`)
+- Branch names use `opsx/<change-name>` (e.g., `opsx/fix-ssa-goroutine-panic`)
 
 ### Code Review
 
@@ -252,27 +252,17 @@ Releases follow [semver](https://semver.org/). Tags trigger the GoReleaser pipel
 
 ## Spec-First Development
 
-All changes that modify production code, test code, or CI configuration must be preceded by a spec workflow. Two workflows are available:
-
-### Speckit Pipeline
-
-For numbered feature specs under `specs/NNN-name/`:
-
-```
-specify → clarify → plan → tasks → implement
-```
-
-Each spec directory contains `spec.md`, `plan.md`, `tasks.md`, and optional research/data-model artifacts. Tasks are dependency-ordered and implemented sequentially.
+All changes that modify production code, test code, agent prompts, embedded assets, or CI configuration must be preceded by an OpenSpec change. OpenSpec is the only requirements pipeline; governance lives at `openspec/constitution.md`.
 
 ### OpenSpec
 
-For targeted changes under `openspec/changes/name/`:
+For all planned changes under `openspec/changes/name/`:
 
 ```
 propose → design → specs → tasks → apply
 ```
 
-Lighter-weight artifacts for focused changes. Archived after merge under `openspec/changes/archive/`.
+Prepare proposal, design, capability deltas and dependency-ordered tasks before implementation. Validate the change with `openspec validate <change> --no-interactive`. Canonical requirements live in `openspec/specs/`; completed changes and historical strategic specifications live under `openspec/changes/archive/`.
 
 ### When Specs Are Required
 
