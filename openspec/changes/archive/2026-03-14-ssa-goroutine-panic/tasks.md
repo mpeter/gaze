@@ -13,7 +13,7 @@
 
 ## 3. Documentation
 
-- [x] 3.1 Update `specs/021-ssa-panic-recovery/research.md` R2 with a correction note: `prog.Build()` spawns goroutines by default, `ssa.BuildSerially` is required for `recover()` to work.
+- [x] 3.1 Update `openspec/changes/archive/2026-03-13-ssa-panic-recovery/research.md` R2 with a correction note: `prog.Build()` spawns goroutines by default, `ssa.BuildSerially` is required for `recover()` to work.
 - [x] 3.2 Update `AGENTS.md` Recent Changes with a summary of this fix.
 
 ## 4. Verification

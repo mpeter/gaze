@@ -20,27 +20,32 @@ This command takes no positional arguments. It always operates on the current wo
 
 ## Scaffolded Files
 
-The `init` command creates the following directory structure:
+The `init` command creates exactly seven files:
 
 ```
 .opencode/
 ├── agents/
-│   └── gaze-reporter.md          # AI agent prompt for quality reporting
+│   ├── gaze-reporter.md          # Quality reporting agent (user-owned)
+│   ├── gaze-test-generator.md    # Test generation agent (tool-owned)
+│   └── reviewer-testing.md       # Testability reviewer (user-owned)
 ├── commands/
 │   ├── gaze.md                   # /gaze command definition
-│   ├── review-council.md         # /review-council command definition
-│   └── speckit.testreview.md     # /speckit.testreview command definition
+│   └── gaze-fix.md               # Test generation and OpenSpec implementation
 └── references/
-    ├── gaze-example-output.md    # Canonical example output for the reporter
-    └── gaze-scoring-model.md     # Document-enhanced classification scoring model
+    ├── example-report.md         # Canonical example output for the reporter
+    └── doc-scoring-model.md      # Document-enhanced classification scoring model
 ```
 
 ### File Ownership Model
 
 Gaze uses a mixed ownership model for scaffolded files:
 
-- **User-owned files** (`agents/`, `commands/gaze.md`): Created once, never overwritten on subsequent `gaze init` runs (unless `--force` is used). Users can customize these files.
-- **Tool-owned files** (`references/`, `commands/review-council.md`, `commands/speckit.testreview.md`): Updated automatically on `gaze init` if the content has changed. These files are maintained by Gaze and should not be manually edited.
+- **User-owned files** (`agents/gaze-reporter.md`, `agents/reviewer-testing.md`, `commands/gaze.md`): Created once, never overwritten on subsequent `gaze init` runs (unless `--force` is used). Users can customize these files.
+- **Tool-owned files** (`references/`, `agents/gaze-test-generator.md`, `commands/gaze-fix.md`): Updated automatically on `gaze init` if the content has changed. These files are maintained by Gaze and should not be manually edited.
+
+Files outside this seven-file manifest, including previously installed retired
+commands, are never deleted, modified or reported by `gaze init`, even with
+`--force`. Project owners can remove stale files manually.
 
 ## Configuration Interaction
 
@@ -56,12 +61,16 @@ gaze init
 ```
 
 ```
-✓ Created .opencode/agents/gaze-reporter.md
-✓ Created .opencode/commands/gaze.md
-✓ Created .opencode/commands/review-council.md
-✓ Created .opencode/commands/speckit.testreview.md
-✓ Created .opencode/references/gaze-example-output.md
-✓ Created .opencode/references/gaze-scoring-model.md
+Gaze OpenCode integration initialized:
+  created: .opencode/agents/gaze-reporter.md
+  created: .opencode/agents/gaze-test-generator.md
+  created: .opencode/agents/reviewer-testing.md
+  created: .opencode/commands/gaze-fix.md
+  created: .opencode/commands/gaze.md
+  created: .opencode/references/doc-scoring-model.md
+  created: .opencode/references/example-report.md
+
+Run /gaze for quality reports and /gaze-fix for test generation.
 ```
 
 ### Re-initialize (update tool-owned files)
@@ -78,7 +87,8 @@ On subsequent runs, user-owned files are skipped and tool-owned files are update
 gaze init --force
 ```
 
-Overwrites all files, including user-customized agent prompts and commands.
+Overwrites all seven current assets, including user-customized agent prompts
+and commands. Files outside the manifest remain untouched.
 
 ## See Also
 

@@ -1,6 +1,6 @@
 ## ADDED Requirements
 
-### SC-001: Baseline Loading
+### Requirement: SC-001: Baseline Loading
 
 `gaze crap` MUST auto-detect a baseline file at `.gaze/baseline.json` when it exists and is non-empty. When the file exists and is non-empty, comparison mode MUST be activated automatically. When the file does not exist or is empty (0 bytes), `gaze crap` MUST behave identically to today (no comparison, no error).
 
@@ -29,7 +29,7 @@
 - **WHEN** the user runs `gaze crap --coverprofile=coverage.out ./...`
 - **THEN** the output MUST be identical to current behavior (no comparison, no error) -- the empty file is silently skipped
 
-### SC-002: Baseline File Format
+### Requirement: SC-002: Baseline File Format
 
 The baseline file format MUST be the JSON output of `gaze crap --format=json`. No separate schema, no transformation required. The `LoadBaseline` function MUST accept an `io.Reader` and return a `*crap.Report`. `LoadBaseline` MUST use lenient JSON parsing (ignore unknown fields, use zero values for missing optional fields) to support baselines created by older or newer gaze versions.
 
@@ -53,7 +53,7 @@ The baseline file format MUST be the JSON output of `gaze crap --format=json`. N
 - **WHEN** the baseline is loaded
 - **THEN** missing optional fields MUST default to zero/nil values and comparison MUST proceed normally (D5 handles nil `gaze_crap`)
 
-### SC-003: Per-Function Comparison
+### Requirement: SC-003: Per-Function Comparison
 
 The comparison logic MUST match functions between baseline and current results using a composite key of `file:function`. For each matched function, the comparison MUST compute CRAP and GazeCRAP deltas. A function MUST be classified as `improvement` when `crap_delta < -epsilon` or `gaze_crap_delta < -epsilon` (when baseline had coverage). When signals conflict (e.g., CRAP regresses but GazeCRAP improves), `regression` MUST take precedence -- the function is classified as `regression`.
 
@@ -82,7 +82,7 @@ The comparison logic MUST match functions between baseline and current results u
 - **WHEN** the current run produces `gaze_crap` 25.0
 - **THEN** the GazeCRAP delta MUST NOT trigger a regression (the function's status depends only on CRAP delta)
 
-### SC-004: New Function Detection
+### Requirement: SC-004: New Function Detection
 
 Functions present in the current results but absent from the baseline MUST be classified as `new`. A new function with a CRAP score exceeding the `new_function_threshold` (default 30) MUST be classified as `new_violation`.
 
@@ -96,7 +96,7 @@ Functions present in the current results but absent from the baseline MUST be cl
 - **WHEN** its CRAP score is 42.0 (above threshold 30)
 - **THEN** it MUST be classified as `new_violation` (counts as a failure)
 
-### SC-005: Removed Function Detection
+### Requirement: SC-005: Removed Function Detection
 
 Functions present in the baseline but absent from the current results MUST be reported as `removed`. Removed functions MUST NOT count as regressions or violations.
 
@@ -106,7 +106,7 @@ Functions present in the baseline but absent from the current results MUST be re
 - **THEN** the function MUST appear in the `removed_functions` section with its baseline scores
 - **AND** the comparison MUST still pass (removed is informational)
 
-### SC-006: Pass/Fail Gate
+### Requirement: SC-006: Pass/Fail Gate
 
 The comparison MUST produce a pass/fail determination. The comparison passes when there are zero regressions AND zero new-function violations. `gaze crap` MUST exit with code 1 when the comparison fails. This is a second independent exit-1 gate alongside the existing `--max-crapload` / `--max-gaze-crapload` threshold gate. Both gates are evaluated independently -- exit 1 if either fails. Comparison output MUST always be written regardless of threshold results.
 
@@ -125,7 +125,7 @@ The comparison MUST produce a pass/fail determination. The comparison passes whe
 - **WHEN** the pass/fail is determined
 - **THEN** the result MUST be `passed: false` and exit code MUST be 1
 
-### SC-007: JSON Comparison Output
+### Requirement: SC-007: JSON Comparison Output
 
 When `--format=json` is used with an active baseline, the JSON output MUST be produced by `WriteComparisonJSON` (separate from `WriteJSON`) and MUST include comparison-specific fields on each score and top-level comparison sections. The `crap.Score` type is NOT modified; the JSON is assembled by the comparison writer from `FunctionDelta` data.
 
@@ -152,7 +152,7 @@ Top-level sections:
 - **WHEN** the user runs `gaze crap --format=json ./...`
 - **THEN** the output MUST be produced by the normal `WriteJSON` path with zero comparison-specific fields or sections
 
-### SC-008: Text Comparison Output
+### Requirement: SC-008: Text Comparison Output
 
 When `--format=text` (default) is used with an active baseline, the text output MUST append comparison sections after the normal CRAP report: comparison summary, regressions table, improvements table, new functions list, and removed functions list.
 
@@ -162,7 +162,7 @@ When `--format=text` (default) is used with an active baseline, the text output 
 - **THEN** the text output MUST include a "Regressions" section listing the 2 functions with their baseline, current, and delta scores
 - **AND** an "Improvements" section listing the 3 functions
 
-### SC-009: Configuration
+### Requirement: SC-009: Configuration
 
 The `.gaze.yaml` file MUST support a `baseline` section with the following fields:
 
@@ -189,7 +189,7 @@ The CLI flag `--baseline` MUST override the config file path. Epsilon and new-fu
 - **WHEN** `gaze crap` loads the config
 - **THEN** `gaze crap` MUST exit with an error indicating epsilon must be >= 0
 
-### Function Status Values
+#### Function Status Values
 
 The `FunctionStatus` type enumerates all valid status values used in comparison output:
 
@@ -202,7 +202,7 @@ The `FunctionStatus` type enumerates all valid status values used in comparison 
 | `new_violation` | `new_functions[].status` | Function not in baseline, CRAP above threshold |
 | `removed` | `removed_functions[].status` | Function in baseline but not in current results |
 
-### Coverage Strategy
+#### Coverage Strategy
 
 New code in `internal/crap/compare.go` and `internal/crap/compare_report.go` MUST achieve >= 90% line coverage via unit tests. All branches in `Compare()` MUST be exercised (the test list in task 3.5 is exhaustive, not illustrative). Integration tests (tasks 6.1-6.4) read local JSON fixtures and run pure functions -- they do NOT spawn subprocesses and complete in milliseconds, so they do NOT use `testing.Short()` guards.
 

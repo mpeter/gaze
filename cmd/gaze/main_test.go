@@ -1268,24 +1268,41 @@ func TestRunInit_CreatesFiles(t *testing.T) {
 	if !strings.Contains(output, "created:") {
 		t.Errorf("expected 'created:' in output, got:\n%s", output)
 	}
-	if !strings.Contains(output, "Run /gaze") {
+	if !strings.Contains(output, "Run /gaze for quality reports and /gaze-fix for test generation.") {
 		t.Errorf("expected hint in output, got:\n%s", output)
 	}
 
 	// Verify files exist.
 	expected := []string{
 		".opencode/agents/gaze-reporter.md",
+		".opencode/agents/gaze-test-generator.md",
 		".opencode/agents/reviewer-testing.md",
 		".opencode/commands/gaze.md",
-		".opencode/commands/speckit.testreview.md",
+		".opencode/commands/gaze-fix.md",
 		".opencode/references/doc-scoring-model.md",
 		".opencode/references/example-report.md",
 	}
 	for _, rel := range expected {
 		path := filepath.Join(dir, rel)
-		if _, err := os.Stat(path); os.IsNotExist(err) {
-			t.Errorf("expected file %s to exist", rel)
+		if _, err := os.Stat(path); err != nil {
+			t.Errorf("expected file %s to exist: %v", rel, err)
 		}
+	}
+	var files []string
+	err = filepath.WalkDir(filepath.Join(dir, ".opencode"), func(p string, entry os.DirEntry, walkErr error) error {
+		if walkErr != nil {
+			return walkErr
+		}
+		if !entry.IsDir() {
+			files = append(files, p)
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(files) != len(expected) {
+		t.Errorf("expected exactly seven scaffolded files, got %v", files)
 	}
 }
 
@@ -1333,6 +1350,37 @@ func TestRunInit_ForceFlag(t *testing.T) {
 	}
 	if !strings.Contains(buf3.String(), "overwritten:") {
 		t.Errorf("expected 'overwritten:' in output, got:\n%s", buf3.String())
+	}
+}
+
+func TestRunInit_PreservesStaleCommand(t *testing.T) {
+	for _, force := range []bool{false, true} {
+		t.Run(fmt.Sprintf("force=%t", force), func(t *testing.T) {
+			dir := t.TempDir()
+			staleName := strings.Join([]string{"spec", "kit.testreview.md"}, "")
+			stalePath := filepath.Join(dir, ".opencode", "commands", staleName)
+			if err := os.MkdirAll(filepath.Dir(stalePath), 0o755); err != nil {
+				t.Fatal(err)
+			}
+			original := []byte("customized command\n")
+			if err := os.WriteFile(stalePath, original, 0o644); err != nil {
+				t.Fatal(err)
+			}
+			var output bytes.Buffer
+			if err := runInit(initParams{targetDir: dir, force: force, version: "test", stdout: &output}); err != nil {
+				t.Fatal(err)
+			}
+			got, err := os.ReadFile(stalePath)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !bytes.Equal(got, original) {
+				t.Errorf("stale command changed: %q", got)
+			}
+			if strings.Contains(output.String(), staleName) {
+				t.Errorf("output mentions stale command: %s", output.String())
+			}
+		})
 	}
 }
 

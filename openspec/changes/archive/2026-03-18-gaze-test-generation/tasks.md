@@ -13,7 +13,7 @@
 ## Phase 3: Implementation Workflow Integration
 
 - [x] 3.1 Modify `.opencode/skills/openspec-apply-change/SKILL.md` to add a test generation step in the per-task loop (step 6). After making code changes and before marking `[x]`: identify changed `.go` files via `git diff --name-only`; for each non-test `.go` file, run `gaze quality --format=json` on its package; if `ContractCoverage.Gaps` exist for new/modified functions, invoke `gaze-test-generator` agent; verify generated tests compile and pass. In mandatory mode (default), block task completion until tests pass. In advisory mode, show results but allow marking `[x]`. Read mode from `.gaze.yaml` `test_generation.mode` key (default: `mandatory`). Add a note that if `gaze` binary is not available, the step is silently skipped (composability — gaze is optional).
-- [x] 3.2 Modify `.opencode/command/speckit.implement.md` to add the same test generation step in the per-task execution loop (step 8). Same behavior as the `/opsx-apply` integration: identify changed files, run quality analysis, generate tests, verify, respect mode config.
+- [x] 3.2 Modify the retired implementation command definition to add the same test generation step in the per-task execution loop (step 8). Same behavior as the `/opsx-apply` integration: identify changed files, run quality analysis, generate tests, verify, respect mode config.
 - [x] 3.3 Test the integration: create a small change via `/opsx-propose`, implement a task that adds a new Go function, and verify the test generation hook fires and produces a test.
 
 ## Phase 4: Scaffold Integration

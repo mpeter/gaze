@@ -15,7 +15,7 @@ $ARGUMENTS
 
 ## Description
 
-Review the current codebase **or** SpecKit artifacts for compliance with the Behavioral Constraints in `AGENTS.md` using the review council. The council dynamically discovers which reviewer agents are available rather than assuming a fixed set.
+Review the current codebase **or** OpenSpec artifacts for compliance with the Behavioral Constraints in `AGENTS.md` using the review council. The council dynamically discovers which reviewer agents are available rather than assuming a fixed set.
 
 ## Determine Review Mode
 
@@ -48,20 +48,20 @@ examining the current branch and workspace:
    relative to `main`.
 
 3. **Classify the changed files**:
-   - **Spec files**: paths under `specs/`, `openspec/`,
-     `.specify/`, or files named `spec.md`, `plan.md`,
-     `tasks.md`, `checklists/`, `contracts/`,
-     `data-model.md`, `research.md`
+   - **Spec files**: paths under `openspec/` (active changes,
+     canonical capability requirements, and governance)
    - **Code files**: everything else (`.go`, `.ts`, `.js`,
      `.py`, `go.mod`, `go.sum`, `Makefile`, `internal/`,
      `cmd/`, `.opencode/agents/`, `.opencode/command/`,
      `.opencode/skill/`, `.opencode/uf/packs/`,
      etc.)
 
-4. **Detect the workflow tier** from the branch name:
-   - Branch matches `opsx/*`: **OpenSpec** (tactical)
-   - Branch matches `NNN-*` (digits then dash): **Speckit** (strategic)
-   - Branch is `main` or other: no active workflow
+4. **Select the OpenSpec context**:
+   - Branch matches `opsx/<name>` and the active change exists:
+     use `openspec/changes/<name>/`.
+   - Otherwise, use an explicitly selected active change, or
+     review canonical requirements and active changes. Exclude
+     `openspec/changes/archive/` from active review.
 
 5. **Select mode based on classification**:
 
@@ -74,9 +74,9 @@ examining the current branch and workspace:
 
 6. **Announce the detected mode**: Always tell the user
    which mode was selected and why, including the
-   workflow tier:
-   > "Detected **Code Review Mode** (Speckit) — found N
-   > code files changed on branch `012-swarm-delegation`
+   OpenSpec context:
+   > "Detected **Code Review Mode** (OpenSpec) — found N
+   > code files changed on branch `opsx/swarm-delegation`
    > vs `main`."
    >
    > Or: "Detected **Spec Review Mode** (OpenSpec) — only
@@ -212,34 +212,28 @@ Review the current codebase for compliance with the Behavioral Constraints in `A
 ## Spec Review Mode
 
 Review spec artifacts for quality, consistency, and
-alignment with the project constitution. The review scope
-depends on the detected workflow tier.
+alignment with the project constitution and canonical requirements.
 
 ### Determine Review Scope
 
-Based on the workflow tier detected in the auto-detection
-step, determine which artifacts to review:
+Based on the selected OpenSpec context, determine which
+artifacts to review:
 
-- **Speckit** (branch `NNN-*`): Review the active spec
-  directory at `specs/NNN-<name>/` (spec.md, plan.md,
-  tasks.md, contracts/, data-model.md, checklists/),
-  plus `.specify/memory/constitution.md` and `AGENTS.md`.
-
-- **OpenSpec** (branch `opsx/*`): Review the active
+- **Active change**: Review the active
   change directory at `openspec/changes/<name>/`
   (proposal.md, design.md, specs/, tasks.md), plus any
   referenced main specs at `openspec/specs/`, plus
-  `.specify/memory/constitution.md` and `AGENTS.md`.
+  `openspec/constitution.md` and `AGENTS.md`.
 
-- **No active workflow** (main or unknown branch): Review
-  all spec artifacts across both `specs/` and
-  `openspec/specs/`, plus the constitution.
+- **No selected active change**: Review `openspec/specs/`
+  and active changes under `openspec/changes/`, excluding
+  `archive/`, plus the constitution and `AGENTS.md`.
 
 ### Instructions
 
 1. Delegate the review to all **discovered** reviewer agents in parallel using the Task tool. For each discovered agent, use the focus area from the Known Reviewer Roles reference table (selecting the Spec Review Focus column) to provide targeted context. For any discovered agent not in the table, use a generic prompt: "Review the spec artifacts in scope for quality, consistency, and alignment. Return your verdict (APPROVE or REQUEST CHANGES) along with all findings."
 
-   For each agent, instruct it to **operate in Spec Review Mode**: review the spec artifacts identified in the review scope above (not code), plus `.specify/memory/constitution.md` and `AGENTS.md`. Include the workflow tier (Speckit/OpenSpec) in the agent prompt so it can tailor its review accordingly. Instruct the agent to return its verdict (**APPROVE** or **REQUEST CHANGES**) along with all findings.
+   For each agent, instruct it to **operate in Spec Review Mode**: review the OpenSpec artifacts identified in the review scope above (not code), plus `openspec/constitution.md` and `AGENTS.md`. Include the selected change and referenced canonical requirements in the agent prompt. Instruct the agent to return its verdict (**APPROVE** or **REQUEST CHANGES**) along with all findings.
 
 2. Collect all **REQUEST CHANGES** findings from the discovered reviewers. If all discovered reviewers return **APPROVE**, report the result and stop.
 
@@ -274,7 +268,7 @@ step, determine which artifacts to review:
    - Outstanding HIGH/CRITICAL findings that require human decision, with full context and recommendations
    - The Architect's Alignment Score for spec quality (if provided)
    - If there were persistent circular findings, report those with additional detail
-   - Suggested next steps (e.g., "Run `/speckit.clarify` on spec 007 to resolve the ambiguous credential migration behavior")
+   - Suggested next steps (e.g., "Resolve the ambiguous credential migration requirement in the active change's capability delta, then re-run `/review-council specs`")
 
 ---
 

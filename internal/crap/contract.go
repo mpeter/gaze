@@ -157,7 +157,7 @@ func BuildContractCoverageFunc(
 // or an error if pattern resolution fails.
 //
 // NOTE: keep in sync with internal/aireport/runner_steps.go:resolvePackagePaths.
-// Consolidation deferred — see specs/022-report-gazecrap-pipeline/tasks.md.
+// Consolidation deferred — see openspec/changes/archive/2026-03-17-report-gazecrap-pipeline/tasks.md.
 func resolvePackagePaths(patterns []string, moduleDir string) ([]string, error) {
 	cfg := &packages.Config{
 		Mode: packages.NeedName,
@@ -325,7 +325,7 @@ func loadTestPackage(pkgPath string) (*packages.Package, error) {
 // back to the default config on any error.
 //
 // NOTE: keep in sync with internal/aireport/runner_steps.go:loadGazeConfigBestEffort.
-// Consolidation deferred — see specs/022-report-gazecrap-pipeline/tasks.md.
+// Consolidation deferred — see openspec/changes/archive/2026-03-17-report-gazecrap-pipeline/tasks.md.
 func loadGazeConfigBestEffort() *config.GazeConfig {
 	cwd, err := os.Getwd()
 	if err != nil {

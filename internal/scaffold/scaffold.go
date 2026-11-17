@@ -69,14 +69,13 @@ type Result struct {
 // command files are tool-owned by exact match. This approach is
 // necessary because the commands/ directory contains both
 // user-owned files (gaze.md) and tool-owned files
-// (speckit.testreview.md).
+// (gaze-fix.md).
 func isToolOwned(relPath string) bool {
 	if strings.HasPrefix(relPath, "references/") {
 		return true
 	}
 	switch relPath {
-	case "commands/speckit.testreview.md",
-		"agents/gaze-test-generator.md",
+	case "agents/gaze-test-generator.md",
 		"commands/gaze-fix.md":
 		return true
 	}
@@ -332,7 +331,7 @@ func printSummary(w io.Writer, r *Result) {
 	}
 
 	_, _ = fmt.Fprintln(w)
-	_, _ = fmt.Fprintln(w, "Run /gaze for quality reports and /speckit.testreview for testability analysis.")
+	_, _ = fmt.Fprintln(w, "Run /gaze for quality reports and /gaze-fix for test generation.")
 
 	// Count only user-owned skipped files for the --force hint.
 	// Tool-owned reference files that are skipped (identical content)

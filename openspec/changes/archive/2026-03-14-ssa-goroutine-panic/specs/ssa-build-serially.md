@@ -32,10 +32,10 @@ Both `BuildSSA` and `BuildTestSSA` MUST use `ssa.InstantiateGenerics | ssa.Build
 
 ### Requirement: Spec 021 research assumption corrected
 
-The research document `specs/021-ssa-panic-recovery/research.md` R2 SHOULD include a correction noting that `prog.Build()` spawns goroutines by default and `ssa.BuildSerially` is required for `recover()` to work correctly.
+The research document `openspec/changes/archive/2026-03-13-ssa-panic-recovery/research.md` R2 SHOULD include a correction noting that `prog.Build()` spawns goroutines by default and `ssa.BuildSerially` is required for `recover()` to work correctly.
 
 #### Scenario: Research document reflects actual behavior
-- **GIVEN** the research document at `specs/021-ssa-panic-recovery/research.md`
+- **GIVEN** the research document at `openspec/changes/archive/2026-03-13-ssa-panic-recovery/research.md`
 - **WHEN** a developer reads section R2
 - **THEN** the document SHOULD note that the original synchronous assumption was incorrect and `BuildSerially` was applied as a fix
 

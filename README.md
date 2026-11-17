@@ -55,7 +55,7 @@ Requires Go 1.25.0 or later. For platform notes and verification steps, see [Ins
 
 Homebrew binaries are code-signed with an Apple Developer ID certificate and notarized by Apple's notary service. macOS Gatekeeper trusts the binary on first run -- no security overrides needed.
 
-**For maintainers**: Signing requires 5 GitHub secrets (Apple Developer ID certificate + App Store Connect API key). See [quickstart guide](specs/014-macos-notarization/quickstart.md) for setup instructions. When secrets are not configured, the release pipeline produces unsigned binaries without error.
+**For maintainers**: Signing requires 5 GitHub secrets (Apple Developer ID certificate + App Store Connect API key). See [quickstart guide](openspec/changes/archive/2026-03-01-macos-notarization/quickstart.md) for setup instructions. When secrets are not configured, the release pipeline produces unsigned binaries without error.
 
 ## Commands
 

@@ -21,7 +21,7 @@ import (
 // Duplicated from internal/analysis/mutation.go because Go's package
 // system does not allow sharing unexported symbols across internal
 // packages. A shared package was rejected to keep both packages
-// dependency-light — see specs/021-ssa-panic-recovery/research.md R3.
+// dependency-light — see openspec/changes/archive/2026-03-13-ssa-panic-recovery/research.md R3.
 func safeSSABuild(buildFn func()) (panicVal any) {
 	defer func() {
 		panicVal = recover()

@@ -65,7 +65,7 @@ Serial build loses parallelism across transitive dependencies. For gaze's use ca
 
 ### D3: Update spec 021 research assumption
 
-The research document at `specs/021-ssa-panic-recovery/research.md` R2 states `prog.Build()` is synchronous. This is incorrect and should be corrected with a note documenting the actual behavior and the `BuildSerially` fix.
+The research document at `openspec/changes/archive/2026-03-13-ssa-panic-recovery/research.md` R2 states `prog.Build()` is synchronous. This is incorrect and should be corrected with a note documenting the actual behavior and the `BuildSerially` fix.
 
 ## Risks / Trade-offs
 
